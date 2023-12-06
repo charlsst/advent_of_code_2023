@@ -1,4 +1,4 @@
-stringsFile = open("AdventOfCode/202301strings.txt","r")
+stringsFile = open("Day1/202301strings.txt","r")
 stringLines = stringsFile.readlines()
 
 numbers = []

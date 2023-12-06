@@ -1,4 +1,4 @@
-schematic = open("AdventOfCode/202303schematic.txt")
+schematic = open("Day3/202303schematic.txt","r")
 
 sTable= []
 gears = []

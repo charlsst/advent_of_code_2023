@@ -1,4 +1,4 @@
-bingo = open("AdventOfCode/202304bingo.txt")
+bingo = open("Day4/202304bingo.txt","r")
 
 total = 0
 index = 0

@@ -1,4 +1,4 @@
-gamesFile = open("AdventOfCode/202302games.txt","r")
+gamesFile = open("Day2/202302games.txt","r")
 games = gamesFile.readlines()
 
 maxRed = 12
