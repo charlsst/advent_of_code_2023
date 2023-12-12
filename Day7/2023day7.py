@@ -33,7 +33,7 @@ def insertIntoTable(valToInsertTable, tableToInsertInto):
                 if not doFirst: #if doing part 2
                     #print(f"Vals: {weights[valToInsert[index]]} {weights[val[0][index]]}")
                     if weights2[valToInsert[index]] > weights2[val[0][index]] :
-                        print(tableIndex, valToInsert)
+                        #print(tableIndex, valToInsert)
                         tableToInsertInto.insert(tableIndex, valToInsertTable)
                         return tableToInsertInto
                     if weights2[valToInsert[index]] < weights2[val[0][index]] : break
@@ -41,7 +41,7 @@ def insertIntoTable(valToInsertTable, tableToInsertInto):
                 else :
                     #print(f"Vals: {weights[valToInsert[index]]} {weights[val[0][index]]}")
                     if weights[valToInsert[index]] > weights[val[0][index]] :
-                        print(tableIndex, valToInsert)
+                        #print(tableIndex, valToInsert)
                         tableToInsertInto.insert(tableIndex, valToInsertTable)
                         return tableToInsertInto
                     if weights[valToInsert[index]] < weights[val[0][index]] : break
@@ -60,17 +60,15 @@ for line in cardsLines:
 
     for card in game[0] :
         if not doFirst :
-            cardDict[card] += 1
-            if card == "J" :
-                if cardDict[card] > 1 and card not in duos : duos.append(card)
-                if cardDict[card] > 2 and card not in trios : trios.append(card)
-                if cardDict[card] > 3 and card not in quads : quads.append(card)
-                if cardDict[card] > 4 and card not in quints : quints.append(card)
-            else :
-                if cardDict[card]+cardDict["J"] > 1 and card not in duos : duos.append(card)
-                if cardDict[card]+cardDict["J"] > 2 and card not in trios : trios.append(card)
-                if cardDict[card]+cardDict["J"] > 3 and card not in quads : quads.append(card)
-                if cardDict[card]+cardDict["J"] > 4 and card not in quints : quints.append(card)
+            if card.strip() == "J" : #dont add one to all the js
+                for i in cardDict : cardDict[i] += 1
+            else : cardDict[card] += 1
+
+            for i in cardDict :
+                if cardDict[i] > 1 and i not in duos : duos.append(card)
+                if cardDict[i] > 2 and i not in trios : trios.append(card)
+                if cardDict[i] > 3 and i not in quads : quads.append(card)
+                if cardDict[i] > 4 and i not in quints : quints.append(card)
         else :
             cardDict[card] += 1
             if cardDict[card] > 1 and card not in duos : duos.append(card)
@@ -78,16 +76,34 @@ for line in cardsLines:
             if cardDict[card] > 3 and card not in quads : quads.append(card)
             if cardDict[card] > 4 and card not in quints : quints.append(card)
 
-    print(f"Duos: {duos}, Trios: {trios}, Quads: {quads}, Quints: {quints}")
-    time.sleep(1)
+    #print(f"Duos: {duos}, Trios: {trios}, Quads: {quads}, Quints: {quints}")
 
-    if len(quints) >= 1 : fiveOfAKinds = insertIntoTable(game, fiveOfAKinds)
-    elif len(quads) >= 1 : fourOfAKinds = insertIntoTable(game, fourOfAKinds)
-    elif len(trios) >= 1 and len(duos) >= 2 : fullHouses = insertIntoTable(game, fullHouses)
-    elif len(trios) >= 1 : threeOfAKinds = insertIntoTable(game, threeOfAKinds)
-    elif len(duos) >= 2 : twoPairs = insertIntoTable(game, twoPairs)
-    elif len(duos) >= 1 : onePairs = insertIntoTable(game, onePairs)
-    else : highs = insertIntoTable(game, highs)
+    if not doFirst :
+        if len(quints) >= 1 : fiveOfAKinds = insertIntoTable(game, fiveOfAKinds)
+        elif len(quads) >= 1 : fourOfAKinds = insertIntoTable(game, fourOfAKinds)
+        elif len(trios) >= 1 and len(duos) >= 2 :
+            if len(game[0].replace("J", "")) == 4 :
+                tempVal = game[0].replace("J", "")[0]
+                if len(game[0].replace("J", "").replace(tempVal, "")) == 2 : 
+                    if game[0].replace("J", "").replace(tempVal, "")[0] == game[0].replace("J", "").replace(tempVal, "")[1] : fullHouses = insertIntoTable(game, fullHouses)
+                    else : threeOfAKinds = insertIntoTable(game, threeOfAKinds)
+                else : threeOfAKinds = insertIntoTable(game, threeOfAKinds)
+            elif len(game[0].replace("J", "")) == 5 : fullHouses = insertIntoTable(game, fullHouses)
+            else : threeOfAKinds = insertIntoTable(game, threeOfAKinds)
+        elif len(trios) >= 1 : threeOfAKinds = insertIntoTable(game, threeOfAKinds)
+        elif len(duos) >= 2 :
+            if len(game[0].replace("J", "")) == 5 : twoPairs = insertIntoTable(game, twoPairs)
+            else : onePairs = insertIntoTable(game, onePairs)
+        elif len(duos) == 1 : onePairs = insertIntoTable(game, onePairs)
+        else : highs = insertIntoTable(game, highs)
+    else :
+        if len(quints) >= 1 : fiveOfAKinds = insertIntoTable(game, fiveOfAKinds)
+        elif len(quads) >= 1 : fourOfAKinds = insertIntoTable(game, fourOfAKinds)
+        elif len(trios) >= 1 and len(duos) >= 2 : fullHouses = insertIntoTable(game, fullHouses)   
+        elif len(trios) >= 1 : threeOfAKinds = insertIntoTable(game, threeOfAKinds)
+        elif len(duos) >= 2 : twoPairs = insertIntoTable(game, twoPairs)
+        elif len(duos) == 1 : onePairs = insertIntoTable(game, onePairs)
+        else : highs = insertIntoTable(game, highs)
 
     testVal +=1
 
@@ -100,37 +116,36 @@ for val in fiveOfAKinds :
 for val in fourOfAKinds :
     fullTable.append(val)
     testVal += 1
-print(len(fullTable))
 for val in fullHouses :
     fullTable.append(val)
     testVal += 1
-print(len(fullTable))
 for val in threeOfAKinds :
     fullTable.append(val)
     testVal += 1
-print(len(fullTable))
 for val in twoPairs : 
     fullTable.append(val)
     testVal += 1
-print(len(fullTable))
 for val in onePairs :
     fullTable.append(val)
     testVal += 1
-print(len(fullTable))
 for val in highs :
     fullTable.append(val)
     testVal += 1
 
-print(fullTable)
-print(f"TestVal: {testVal}")
+#print(f"Full Table: {fullTable}")
+#print(f"TestVal: {testVal}, {len(fullTable)}")
 
 fullIndex = 0
 total1 = 0
 
 for card in fullTable :
-    #print(f"EndTimes: {int(card[1])} * {(len(fullTable)-fullTable.index(card))} = {int(card[1]) * (len(fullTable)-fullTable.index(card))}")
     total1 += int(card[1]) * (len(fullTable)-fullTable.index(card))
+    #print(f"EndTimes ({card[0]}): {int(card[1])} * {(len(fullTable)-fullTable.index(card))} = {int(card[1]) * (len(fullTable)-fullTable.index(card))} (currently {total1})")
 
-print(f"Total (part 1): {total1}")
+print(f"Total: {total1}")
+
+tempTable = []
+
+for i in fullTable : tempTable.append(i[0])
 
 cardsFile.close()
